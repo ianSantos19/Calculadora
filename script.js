@@ -19,6 +19,10 @@ function calcular() {
     tabela.innerHTML = '';
 
     var variaveis = Array.from(new Set(expressao.match(/[A-Z]/g)));
+    if (!variaveis) {
+        alert("Expressão inválida: nenhuma variável encontrada.");
+        return;
+    }
     variaveis.sort();
 
     var linhas = Math.pow(2, variaveis.length);
@@ -46,7 +50,75 @@ function calcular() {
 }
 
 function avaliarExpressao(expressao, valores) {
-    var exp = expressao.replace(/([A-Z])/g, match => valores[match]);
-    exp = exp.replace(/\^/g, '&&').replace(/v/g, '||').replace(/˜/g, '!');
-    return eval(exp) ? 1 : 0;
+    let exp = expressao.replace(/1/g, '&&').replace(/v/g, '||').replace(/2/g, '|| !').replace(/3/g, '==').replace(/˜/g, '!');
+
+    exp = exp.replace(/([A-Z])/g, match => {
+        if (valores[match] === undefined) {
+            throw new Error(`Variável ${match} não encontrada nos valores fornecidos.`);
+        }
+        return valores[match];
+    });
+
+    exp = exp.replace(/\s+/g, '');
+
+    try {
+        const fn = new Function(`return ${exp}`);
+        const resultado = fn();
+        return resultado ? 1 : 0;
+    } catch (e) {
+        console.error("Erro ao avaliar a expressão:", e);
+        console.error("Expressão que causou o erro:", exp);
+        return 0;
+    }
+}
+
+function implicacaoLogica(numeroVariaveis) {
+    // Verifica se o número de variáveis é válido
+    if (numeroVariaveis < 2) {
+        alert("A implicação lógica requer pelo menos 2 variáveis.");
+        return;
+    }
+
+    // Cria as variáveis (A, B, C, ...)
+    var variaveis = [];
+    for (let i = 0; i < numeroVariaveis; i++) {
+        variaveis.push(String.fromCharCode(65 + i)); // 65 é o código ASCII para 'A'
+    }
+
+    // Obtém a referência da tabela
+    var tabela = document.getElementById('tabela');
+    tabela.innerHTML = ''; // Limpa a tabela
+
+    // Cria o cabeçalho da tabela
+    var cabecalho = '<tr>';
+    for (let v of variaveis) {
+        cabecalho += `<th>${v}</th>`;
+    }
+    cabecalho += `<th>A → B</th></tr>`; // Adiciona a coluna para a implicação
+    tabela.innerHTML += cabecalho;
+
+    // Calcula o número de linhas (2^numeroVariaveis)
+    var linhas = Math.pow(2, numeroVariaveis);
+
+    // Gera as linhas da tabela verdade
+    for (let i = 0; i < linhas; i++) {
+        var valores = {};
+        var linha = '<tr>';
+
+        // Preenche os valores das variáveis
+        for (let j = 0; j < numeroVariaveis; j++) {
+            valores[variaveis[j]] = (i >> (numeroVariaveis - j - 1)) & 1; // 0 ou 1
+            linha += `<td>${valores[variaveis[j]]}</td>`;
+        }
+
+        // Cria a expressão lógica para a implicação (A → B)
+        var expressao = `${variaveis[0]}->${variaveis[1]}`;
+
+        // Usa a função avaliarExpressao para calcular o resultado
+        var resultado = avaliarExpressao(expressao, valores);
+
+        // Adiciona o resultado na linha
+        linha += `<td>${resultado}</td></tr>`;
+        tabela.innerHTML += linha;
+    }
 }
