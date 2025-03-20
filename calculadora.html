@@ -49,6 +49,18 @@
                 text-align: right;
                 padding: 5px;
             }
+
+            .tabela-verdade {
+                position: absolute;
+                top: 50%;
+                left: 70%;
+                transform: translate(-50%, -50%);
+                background-color: white;
+                color: black;
+                padding: 15px;
+                border-radius: 10px;
+                border: 2px solid black;
+            }
         </style>
     </head>
     <body>
@@ -71,71 +83,54 @@
                         <td><button class="botao" onclick="insert('F')">F</button></td>
                         <td><button class="botao" onclick="insert('G')">G</button></td>
                         <td><button class="botao" onclick="insert('H')">H</button></td>
-                        <td><button class="botao" onclick="insert('(')" >(</button></td>
-                        <td><button class="botao" onclick="insert(')')">)</button></td>
+                        <td><button class="botao" onclick="insert('1')">^</button></td>
+                        <td><button class="botao" onclick="insert('v')">v</button></td>
+                        
                     </tr>
                     <tr>
                         <td><button class="botao" onclick="insert('I')">I</button></td>
                         <td><button class="botao" onclick="insert('J')">J</button></td>
                         <td><button class="botao" onclick="insert('K')">K</button></td>
                         <td><button class="botao" onclick="insert('L')">L</button></td>
-                        <td><button class="botao" onclick="insert('->')">-></button></td>
-                        <td><button class="botao" onclick="insert('ˆ')">^</button></td>
+                        <td><button class="botao" onclick="insert('2')">→</button></td>
+                        <td><button class="botao" onclick="insert('3')">↔</button></td>
+
                     </tr>
                     <tr>
                         <td><button class="botao" onclick="insert('M')">M</button></td>
                         <td><button class="botao" onclick="insert('N')">N</button></td>
                         <td><button class="botao" onclick="insert('O')">O</button></td>
                         <td><button class="botao" onclick="insert('P')">P</button></td>
-                        <td><button class="botao" onclick="insert('<->')"><-></button></td>
-                        <td><button class="botao" onclick="insert('v')">v</button></td>
+                        <td><button class="botao" onclick="insert('˜')">¬</button></td>
+                        <td rowspan="2"><button class="botao" style="height: 106px;" onclick="calcular()">=</button></td>
+
                     </tr>
                     <tr>
                         <td><button class="botao" onclick="insert('Q')">Q</button></td>
                         <td><button class="botao" onclick="insert('R')">R</button></td>
                         <td><button class="botao" onclick="insert('S')">S</button></td>
                         <td><button class="botao" onclick="insert('T')">T</button></td>
-                        <td><button class="botao" onclick="insert('˜')">~</button></td>
-                        <td><button class="botao" onclick="insert('-V')">-V</button></td>
+
                     </tr>
                     <tr>
                         <td><button class="botao" onclick="insert('U')">U</button></td>
                         <td><button class="botao" onclick="insert('V')">V</button></td>
                         <td><button class="botao" onclick="insert('W')">W</button></td>
                         <td><button class="botao" onclick="insert('X')">X</button></td>
-                        <td><button class="botao" onclick="insert('V')">V</button></td>
-                        <td rowspan="2"><button class="botao" style="height: 106px;" onclick="calcular()">=</button></td>
-                        
                     </tr>
                     <tr>
                         <td></td>
                         <td><button class="botao" onclick="insert('Y')">Y</button></td>
                         <td><button class="botao" onclick="insert('Z')">Z</button></td>
                         <td></td>
-                        <td><button class="botao">F</button></td>
                     </tr>
                 </table>
             </div>
+            <div class="tabela-verdade">
+                <h2>Tabela Verdade</h2>
+                <table id="tabela"></table>
+            </div>
         </div>
-        <script>
-            function insert(letras){
-                var letra = document.getElementById('resultado').innerHTML;
-                document.getElementById('resultado').innerHTML = letra + letras;
-                
-            }
-
-            function clean(){
-                document.getElementById('resultado').innerHTML = '';
-            }
-
-            function back(){
-                var resultado = document.getElementById('resultado').innerHTML;
-                document.getElementById('resultado').innerHTML = resultado.substring(0, resultado.length -1);
-            }
-
-            function calcular(){
-                var resultado = document.getElementById('resultado').innerHTML;
-            }
-        </script>
+        <script src="script.js"></script>
     </body>
 </html>
