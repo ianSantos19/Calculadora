@@ -1,136 +1,137 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Calculadora</title>
-        <style>
-            *{
-                margin: 0;
-                padding: 0;
-            }
-            .fundo{
-                background-image: linear-gradient(45deg, black, white );
-                height: 100vh;
-                color: aliceblue;
-                font-family: Arial, Helvetica, sans-serif;
-                text-align: center;
-            }
-            .calculadora{
-                position: absolute;
-                background-color: silver;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                border-radius: 15px;
-                padding: 15px;
-            }
-            .botao{
-                width: 50px;
-                height: 50px;
-                font-size: 25px;
-                cursor: pointer;
-                background-color: rgb(31,31,31);
-                border: none;
-                color: white;
-                margin: 3px;
+function insert(caractere) {
+    const mapeamento = {
+        '1': '^',
+        '2': '→',
+        '3': '↔',
+        '˜': '¬',
+    };
 
-            }
-            .botao:hover{
-                background-color: black;
-            }
-            #resultado{
-                background-color: white;
-                width: 310px;
-                height: 30px;
-                margin: 15px;
-                font-size: 25px;
-                color: black;
-                text-align: right;
-                padding: 5px;
-            }
+    const caractereVisivel = mapeamento[caractere] || caractere;
 
-            .tabela-verdade {
-                position: absolute;
-                top: 50%;
-                left: 70%;
-                transform: translate(-50%, -50%);
-                background-color: white;
-                color: black;
-                padding: 15px;
-                border-radius: 10px;
-                border: 2px solid black;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="fundo">
-            <h1>Ian Oliveira</h1>
-            <div class="calculadora">
-                <h1>Calculadora</h1>
-                <p id="resultado"></p>
-                <table>
-                    <tr>
-                        <td><button class="botao" onclick="insert('A')">A</button></td>
-                        <td><button class="botao" onclick="insert('B')">B</button></td>
-                        <td><button class="botao" onclick="insert('C')">C</button></td>
-                        <td><button class="botao" onclick="insert('D')">D</button></td>
-                        <td><button class="botao" onclick="clean()">C</button></td>
-                        <td><button class="botao" onclick="back()">DELETE</button></td>
-                    </tr>
-                    <tr>
-                        <td><button class="botao" onclick="insert('E')">E</button></td>
-                        <td><button class="botao" onclick="insert('F')">F</button></td>
-                        <td><button class="botao" onclick="insert('G')">G</button></td>
-                        <td><button class="botao" onclick="insert('H')">H</button></td>
-                        <td><button class="botao" onclick="insert('1')">^</button></td>
-                        <td><button class="botao" onclick="insert('v')">v</button></td>
-                        
-                    </tr>
-                    <tr>
-                        <td><button class="botao" onclick="insert('I')">I</button></td>
-                        <td><button class="botao" onclick="insert('J')">J</button></td>
-                        <td><button class="botao" onclick="insert('K')">K</button></td>
-                        <td><button class="botao" onclick="insert('L')">L</button></td>
-                        <td><button class="botao" onclick="insert('2')">→</button></td>
-                        <td><button class="botao" onclick="insert('3')">↔</button></td>
+    var resultado = document.getElementById('resultado');
+    resultado.innerHTML += caractereVisivel;
+}
 
-                    </tr>
-                    <tr>
-                        <td><button class="botao" onclick="insert('M')">M</button></td>
-                        <td><button class="botao" onclick="insert('N')">N</button></td>
-                        <td><button class="botao" onclick="insert('O')">O</button></td>
-                        <td><button class="botao" onclick="insert('P')">P</button></td>
-                        <td><button class="botao" onclick="insert('˜')">¬</button></td>
-                        <td rowspan="2"><button class="botao" style="height: 106px;" onclick="calcular()">=</button></td>
+function clean() {
+    document.getElementById('resultado').innerHTML = '';
+}
 
-                    </tr>
-                    <tr>
-                        <td><button class="botao" onclick="insert('Q')">Q</button></td>
-                        <td><button class="botao" onclick="insert('R')">R</button></td>
-                        <td><button class="botao" onclick="insert('S')">S</button></td>
-                        <td><button class="botao" onclick="insert('T')">T</button></td>
+function back() {
+    var resultado = document.getElementById('resultado').innerHTML;
+    document.getElementById('resultado').innerHTML = resultado.substring(0, resultado.length - 1);
+}
 
-                    </tr>
-                    <tr>
-                        <td><button class="botao" onclick="insert('U')">U</button></td>
-                        <td><button class="botao" onclick="insert('V')">V</button></td>
-                        <td><button class="botao" onclick="insert('W')">W</button></td>
-                        <td><button class="botao" onclick="insert('X')">X</button></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><button class="botao" onclick="insert('Y')">Y</button></td>
-                        <td><button class="botao" onclick="insert('Z')">Z</button></td>
-                        <td></td>
-                    </tr>
-                </table>
-            </div>
-            <div class="tabela-verdade">
-                <h2>Tabela Verdade</h2>
-                <table id="tabela"></table>
-            </div>
-        </div>
-        <script src="script.js"></script>
-    </body>
-</html>
+function calcular() {
+    var expressao = document.getElementById('resultado').innerHTML;
+    var tabela = document.getElementById('tabela');
+
+    tabela.innerHTML = '';
+
+    var variaveis = Array.from(new Set(expressao.match(/[A-Z]/g)));
+    if (!variaveis) {
+        alert("Expressão inválida: nenhuma variável encontrada.");
+        return;
+    }
+    variaveis.sort();
+
+    var linhas = Math.pow(2, variaveis.length);
+
+    var cabecalho = '<tr>';
+    for (var v of variaveis) {
+        cabecalho += `<th>${v}</th>`;
+    }
+    cabecalho += `<th>Resultado</th></tr>`;
+    tabela.innerHTML += cabecalho;
+
+    for (var i = 0; i < linhas; i++) {
+        var valores = {};
+        var linha = '<tr>';
+
+        for (var j = 0; j < variaveis.length; j++) {
+            valores[variaveis[j]] = (i >> (variaveis.length - j - 1)) & 1;
+            linha += `<td>${valores[variaveis[j]]}</td>`;
+        }
+
+        var resultado = avaliarExpressao(expressao, valores);
+        linha += `<td>${resultado}</td></tr>`;
+        tabela.innerHTML += linha;
+    }
+}
+
+function avaliarExpressao(expressao, valores) {
+    const mapeamentoInverso = {
+        '^': '1',
+        '→': '2',
+        '↔': '3',
+        '¬': '˜',
+    };
+
+    let exp = expressao.replace(/[→↔¬]/g, match => mapeamentoInverso[match]);
+
+    exp = exp
+        .replace(/\^/g, '&&')
+        .replace(/v/g, '||')
+        .replace(/2/g, '|| !')
+        .replace(/3/g, '==')
+        .replace(/˜/g, '!');
+
+    exp = exp.replace(/([A-Z])/g, match => {
+        if (valores[match] === undefined) {
+            throw new Error(`Variável ${match} não encontrada nos valores fornecidos.`);
+        }
+        return valores[match];
+    });
+
+    exp = exp.replace(/\s+/g, '');
+
+    try {
+        const fn = new Function(`return ${exp}`);
+        const resultado = fn();
+        return resultado ? 1 : 0;
+    } catch (e) {
+        console.error("Erro ao avaliar a expressão:", e);
+        console.error("Expressão que causou o erro:", exp);
+        return 0;
+    }
+}
+
+function implicacaoLogica(numeroVariaveis) {
+    if (numeroVariaveis < 2) {
+        alert("A implicação lógica requer pelo menos 2 variáveis.");
+        return;
+    }
+
+    var variaveis = [];
+    for (let i = 0; i < numeroVariaveis; i++) {
+        variaveis.push(String.fromCharCode(65 + i));
+    }
+
+    var tabela = document.getElementById('tabela');
+    tabela.innerHTML = '';
+
+    var cabecalho = '<tr>';
+    for (let v of variaveis) {
+        cabecalho += `<th>${v}</th>`;
+    }
+    cabecalho += `<th>A → B</th></tr>`;
+    tabela.innerHTML += cabecalho;
+
+    var linhas = Math.pow(2, numeroVariaveis);
+
+    for (let i = 0; i < linhas; i++) {
+        var valores = {};
+        var linha = '<tr>';
+
+        for (let j = 0; j < numeroVariaveis; j++) {
+            valores[variaveis[j]] = (i >> (numeroVariaveis - j - 1)) & 1;
+            linha += `<td>${valores[variaveis[j]]}</td>`;
+        }
+
+        var expressao = `${variaveis[0]}->${variaveis[1]}`;
+
+        var resultado = avaliarExpressao(expressao, valores);
+
+        linha += `<td>${resultado}</td></tr>`;
+        tabela.innerHTML += linha;
+    }
+}
